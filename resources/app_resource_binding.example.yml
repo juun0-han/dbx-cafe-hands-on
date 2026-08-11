@@ -1,0 +1,33 @@
+# Databricks App Bundle에 합칠 리소스 바인딩 예시입니다.
+# <...> 값을 실제 워크스페이스 자원으로 교체합니다.
+# 현재 Bundle AppResource 스키마에 AI Search index 전용 항목이 없으므로,
+# index는 App UI에서 key=cafe_glossary_index, permission=CAN SELECT로 추가합니다.
+
+resources:
+  apps:
+    cafe_supervisor_app:
+      name: cafe-supervisor-app
+      description: Genie Agent와 AI Search를 조합한 카페 Supervisor Agent
+      source_code_path: ./app
+      user_api_scopes:
+        - genie
+        - vector-search
+        - ai-gateway
+      config:
+        command: ["uv", "run", "start-app"]
+        env:
+          - name: API_PROXY
+            value: http://localhost:8000/invocations
+          - name: CHAT_APP_PORT
+            value: "3000"
+          - name: AI_GATEWAY_MODEL
+            value: <catalog.schema.gateway_endpoint>
+      resources:
+        - name: cafe_genie
+          genie_space:
+            space_id: <GENIE_AGENT_ID>
+            permission: CAN_RUN
+        - name: cafe_experiment
+          experiment:
+            experiment_id: <MLFLOW_EXPERIMENT_ID>
+            permission: CAN_MANAGE

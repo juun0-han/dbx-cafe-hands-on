@@ -1,0 +1,28 @@
+bundle:
+  name: cafe_hands_on
+
+include:
+  - resources/cafe_hands_on.resources.yml
+
+sync:
+  paths:
+    - notebooks
+    - resources
+    - sample_data
+
+variables:
+  catalog:
+    description: 개인 Workspace에서 사용할 Unity Catalog Catalog
+    default: cafe_training
+  schema:
+    description: Bronze, Silver, Gold 대상 Schema
+    default: cafe_hands_on
+  warehouse_id:
+    description: SQL 검증 태스크에 사용할 Warehouse ID
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}

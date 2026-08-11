@@ -1,0 +1,7 @@
+example_id,category,question,sql_answer,teaching_point
+E001,기본,전체 기간 순매출은 얼마야?,SELECT MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics,매출의 기본값은 순매출
+E002,기본,매장별 순매출을 비교해줘,"SELECT store_name, MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY store_name ORDER BY net_sales DESC",매장 차원과 순매출 측정값
+E003,기본,판매수량 기준 TOP 3 메뉴는?,"SELECT product_name, MEASURE(item_quantity) AS item_quantity FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY product_name ORDER BY item_quantity DESC LIMIT 3",인기메뉴의 판매수량 기준 예시
+E004,분석,일자별 순매출 추이를 보여줘,"SELECT order_date, MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY order_date ORDER BY order_date",시계열은 날짜순 정렬
+E005,분석,시간대별 순매출과 주문수를 비교해줘,"SELECT daypart, MEASURE(net_sales) AS net_sales, MEASURE(order_count) AS order_count FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY daypart ORDER BY net_sales DESC",복수 측정값 비교
+E006,분석,매장별 객단가가 높은 순서로 보여줘,"SELECT store_name, MEASURE(avg_order_value) AS avg_order_value FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY store_name ORDER BY avg_order_value DESC",객단가는 순매출/주문수

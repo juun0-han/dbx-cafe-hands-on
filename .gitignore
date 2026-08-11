@@ -1,0 +1,15 @@
+.databricks/
+.bundle/
+.venv/
+__pycache__/
+*.pyc
+.env
+*.pem
+*.key
+*_secrets.*
+outputs/
+_previews/
+_previews_v2/
+*.inspect.ndjson
+*.errors.ndjson
+*.zip

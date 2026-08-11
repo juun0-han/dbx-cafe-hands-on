@@ -1,0 +1,33 @@
+layer,object,column,type,description,quality_rule,used_by
+Raw,stores.csv,store_id,STRING,매장 식별자,NOT NULL,Bronze
+Raw,stores.csv,store_name,STRING,매장명,NOT NULL,Metric View
+Raw,stores.csv,region,STRING,지역,NOT NULL,Metric View
+Raw,stores.csv,opened_date,DATE,개점일,유효 날짜,설명용
+Raw,products.csv,product_id,STRING,상품 식별자,NOT NULL,Bronze
+Raw,products.csv,product_name,STRING,상품명,NOT NULL,Metric View
+Raw,products.csv,category,STRING,커피·음료·푸드·디저트,허용값,Metric View
+Raw,products.csv,list_price,INT,기준 판매가(원),> 0,검증
+Raw,orders/*.csv,order_id,STRING,주문 식별자,배치 전체 중복 제거,Silver
+Raw,orders/*.csv,order_ts,TIMESTAMP,주문 시각,유효 타임스탬프,Gold
+Raw,orders/*.csv,store_id,STRING,매장 식별자,매장 마스터와 일치,Gold
+Raw,orders/*.csv,product_id,STRING,상품 식별자,상품 마스터와 일치,Gold
+Raw,orders/*.csv,quantity,INT,판매수량,> 0; 위반 행 DROP,Silver
+Raw,orders/*.csv,unit_price,INT,주문 시점 단가(원),> 0,Gold
+Raw,orders/*.csv,discount_pct,DOUBLE,할인율(0~100),NULL은 0으로 표준화,Gold
+Raw,orders/*.csv,status,STRING,COMPLETED 또는 CANCELLED,UPPER로 표준화,Gold
+Bronze,bronze_orders,_source_file,STRING,원천 파일 경로,자동 기록,추적성
+Bronze,bronze_orders,_ingested_at,TIMESTAMP,적재 시각,자동 기록,추적성
+Silver,silver_orders_clean,discount_pct,DOUBLE,NULL이 제거된 표준 할인율,0~100,Gold
+Silver,silver_orders_clean,status,STRING,대문자 표준 상태,COMPLETED/CANCELLED,Gold
+Gold,gold_sales,order_date,DATE,주문일,order_ts에서 파생,Metric View
+Gold,gold_sales,day_name,STRING,한글 요일,order_ts에서 파생,Metric View
+Gold,gold_sales,day_type,STRING,평일 또는 주말,토·일=주말,Metric View
+Gold,gold_sales,daypart,STRING,모닝·점심·오후·저녁·야간,시간 구간 규칙,Metric View
+Gold,gold_sales,gross_sales,DOUBLE,할인 전 매출,quantity × unit_price,Metric View
+Gold,gold_sales,discount_amount,DOUBLE,할인액,gross_sales × discount_pct/100,Metric View
+Gold,gold_sales,net_sales,DOUBLE,할인 후 순매출,gross_sales - discount_amount,Metric View
+Semantic,cafe_sales_metrics,net_sales,MEASURE,순매출 합계,SUM(net_sales),Genie
+Semantic,cafe_sales_metrics,order_count,MEASURE,완료 주문수,COUNT(DISTINCT order_id),Genie
+Semantic,cafe_sales_metrics,item_quantity,MEASURE,판매수량,SUM(quantity),Genie
+Semantic,cafe_sales_metrics,avg_order_value,MEASURE,객단가,net_sales/order_count,Genie
+Search,cafe_glossary,search_text,STRING,용어·별칭·정의·규칙 결합 텍스트,NOT NULL,AI Search

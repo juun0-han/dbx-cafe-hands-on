@@ -1,0 +1,13 @@
+benchmark_id,mode,category,question,sql_answer,evaluation_note,expected_behavior
+B001,Chat,기본,전체 기간 순매출은 얼마야?,SELECT MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics,,순매출 단일 값을 반환
+B002,Chat,기본,매장별 매출을 높은 순서로 알려줘,"SELECT store_name, MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY store_name ORDER BY net_sales DESC",,매출을 순매출로 해석하고 내림차순 정렬
+B003,Chat,기본,가장 많이 팔린 메뉴 3개 알려줘,"SELECT product_name, MEASURE(item_quantity) AS item_quantity FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY product_name ORDER BY item_quantity DESC LIMIT 3",,판매수량 기준 TOP 3
+B004,Chat,기본,카테고리별 순매출을 비교해줘,"SELECT category, MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY category ORDER BY net_sales DESC",,카테고리별 순매출
+B005,Chat,분석,날짜별 매출 추이를 보여줘,"SELECT order_date, MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY order_date ORDER BY order_date",,날짜 오름차순 순매출 추이
+B006,Chat,분석,시간대별 매출과 주문수를 비교해줘,"SELECT daypart, MEASURE(net_sales) AS net_sales, MEASURE(order_count) AS order_count FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY daypart ORDER BY net_sales DESC",,시간대별 순매출과 주문수
+B007,Chat,분석,강남점 객단가는 얼마야?,"SELECT store_name, MEASURE(avg_order_value) AS avg_order_value FROM cafe_training.cafe_hands_on.cafe_sales_metrics WHERE store_name = '강남점' GROUP BY store_name",,강남점 평균 주문금액
+B008,Chat,분석,주말과 평일의 순매출을 비교해줘,"SELECT day_type, MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY day_type ORDER BY net_sales DESC",,주말/평일 두 행 반환
+B009,Agent,명확화,인기메뉴가 뭐야?,,매출 기준인지 판매수량 기준인지 질문해야 한다.,SQL 실행 전에 기준을 되묻기
+B010,Agent,명확화,손님이 가장 많은 매장은 어디야?,,고객 데이터가 없음을 알리고 주문수와 판매수량 중 의미를 확인해야 한다.,지원 범위를 설명하고 대체 지표를 질문
+B011,Agent,명확화,라떼 매출 알려줘,,카페라떼와 바닐라라떼 중 어느 상품인지 질문해야 한다.,상품 다의어를 되묻기
+B012,Agent,분석,최근 매출 추이를 보여줘,,데이터 최대일 2026-07-14 기준 최근 7일을 사용하고 실제 기간을 응답에 밝혀야 한다.,최근 기간을 해석해 분석

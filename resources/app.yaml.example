@@ -1,0 +1,13 @@
+# 공식 Agent App 템플릿의 app.yaml에 병합합니다.
+# 세 key는 App의 Resources 화면에 동일한 이름으로 존재해야 합니다.
+command:
+  - uv
+  - run
+  - start-app
+env:
+  - name: GENIE_SPACE_ID
+    valueFrom: cafe_genie
+  - name: VECTOR_SEARCH_INDEX
+    valueFrom: cafe_glossary_index
+  - name: MLFLOW_EXPERIMENT_ID
+    valueFrom: cafe_experiment

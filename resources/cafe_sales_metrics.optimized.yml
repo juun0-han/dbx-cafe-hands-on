@@ -1,0 +1,85 @@
+version: 1.1
+comment: '완료된 카페 주문의 매장·상품·시간대별 매출 분석용 표준 Metric View'
+source: cafe_training.cafe_hands_on.gold_sales
+fields:
+  - name: order_date
+    expr: order_date
+    display_name: '주문일'
+    comment: '주문이 완료된 달력 날짜'
+    synonyms: ['판매일', '일자', '날짜']
+  - name: day_name
+    expr: day_name
+    display_name: '요일'
+    comment: '월, 화, 수, 목, 금, 토, 일 중 하나인 한글 요일'
+    synonyms: ['주문 요일', '판매 요일']
+  - name: day_type
+    expr: day_type
+    display_name: '주중 구분'
+    comment: '토요일과 일요일은 주말, 나머지는 평일'
+    synonyms: ['평일 주말', '주말 여부']
+  - name: daypart
+    expr: daypart
+    display_name: '시간대'
+    comment: '모닝 06~10시, 점심 11~13시, 오후 14~17시, 저녁 18~21시, 야간 22~05시'
+    synonyms: ['피크타임', '판매 시간대', '주문 시간대']
+  - name: store_name
+    expr: store_name
+    display_name: '매장명'
+    comment: '강남점, 판교점, 해운대점 중 하나'
+    synonyms: ['지점', '매장', '점포']
+  - name: region
+    expr: region
+    display_name: '지역'
+    comment: '매장이 위치한 광역 지역'
+    synonyms: ['권역', '매장 지역']
+  - name: product_name
+    expr: product_name
+    display_name: '상품명'
+    comment: '판매한 카페 메뉴의 정식 상품명'
+    synonyms: ['메뉴', '제품', '상품']
+  - name: category
+    expr: category
+    display_name: '상품 카테고리'
+    comment: '커피, 음료, 푸드, 디저트 중 하나'
+    synonyms: ['메뉴 구분', '상품군', '제품군']
+measures:
+  - name: gross_sales
+    expr: SUM(gross_sales)
+    display_name: '총매출'
+    comment: '할인 적용 전 완료 주문의 판매금액 합계'
+    synonyms: ['할인 전 매출', '총 판매액']
+  - name: discount_amount
+    expr: SUM(discount_amount)
+    display_name: '할인액'
+    comment: '완료 주문에 적용된 할인 금액 합계'
+    synonyms: ['할인 금액', '총 할인']
+  - name: net_sales
+    expr: SUM(net_sales)
+    display_name: '순매출'
+    comment: '할인 적용 후 완료 주문의 판매금액 합계. 매출의 기본 지표다.'
+    synonyms: ['매출', '실매출', '결제매출', '판매액']
+  - name: order_count
+    expr: COUNT(DISTINCT order_id)
+    display_name: '주문수'
+    comment: '완료된 고유 주문 ID의 개수'
+    synonyms: ['주문 건수', '결제 건수', '건수']
+  - name: item_quantity
+    expr: SUM(quantity)
+    display_name: '판매수량'
+    comment: '완료 주문에서 판매된 상품 수량 합계'
+    synonyms: ['판매량', '상품 개수', '잔수']
+  - name: avg_order_value
+    expr: SUM(net_sales) / COUNT(DISTINCT order_id)
+    display_name: '객단가'
+    comment: '순매출을 완료 주문수로 나눈 평균 주문금액'
+    synonyms: ['주문단가', '평균 결제금액', 'AOV']
+materialization:
+  schedule: every 1 day
+  mode: relaxed
+  materialized_views:
+    - name: daily_store_category
+      type: aggregated
+      dimensions: [order_date, store_name, category]
+      measures: [gross_sales, discount_amount, net_sales, order_count, item_quantity]
+      cluster_by:
+        auto: true

@@ -1,0 +1,34 @@
+resources:
+  pipelines:
+    cafe_medallion_pipeline:
+      name: cafe_medallion_pipeline
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      serverless: true
+      edition: ADVANCED
+      channel: CURRENT
+      libraries:
+        - notebook:
+            path: ../notebooks/01_cafe_medallion_pipeline.sql
+      event_log:
+        name: cafe_pipeline_event_log
+        catalog: ${var.catalog}
+        schema: ${var.schema}
+
+  jobs:
+    cafe_medallion_job:
+      name: cafe_medallion_job
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: run_medallion_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.cafe_medallion_pipeline.id}
+            full_refresh: false
+
+        - task_key: validate_pipeline
+          depends_on:
+            - task_key: run_medallion_pipeline
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../notebooks/04_pipeline_validate.sql

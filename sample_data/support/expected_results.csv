@@ -1,0 +1,16 @@
+scope,dimension,metric,value,unit,calculation_rule
+pipeline,전체,raw_order_rows,300,행,3개 주문 배치의 전체 행
+pipeline,전체,unique_order_ids,298,개,order_id 중복 제거
+pipeline,전체,silver_valid_rows,296,행,중복 제거 후 quantity > 0 및 유효 상태
+pipeline,전체,gold_completed_rows,266,행,Silver 중 COMPLETED 주문
+period,전체,min_order_date,2026-07-01,일,Gold 최소 주문일
+period,전체,max_order_date,2026-07-14,일,Gold 최대 주문일
+metric,전체,gross_sales,1772800,KRW,SUM(quantity × unit_price)
+metric,전체,discount_amount,38220,KRW,SUM(gross_sales × discount_pct/100)
+metric,전체,net_sales,1734580,KRW,gross_sales - discount_amount
+metric,전체,order_count,266,건,COUNT(DISTINCT order_id)
+metric,전체,item_quantity,356,개,SUM(quantity)
+metric,전체,avg_order_value,6520.98,KRW/건,net_sales ÷ order_count
+store,강남점,net_sales,573500,KRW,매장별 SUM(net_sales)
+store,판교점,net_sales,647460,KRW,매장별 SUM(net_sales)
+store,해운대점,net_sales,513620,KRW,매장별 SUM(net_sales)

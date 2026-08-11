@@ -1,0 +1,11 @@
+eval_id,question,expected_route,expected_tool_sequence,expected_answer_contains,notes
+A001,매장별 순매출을 비교해줘,structured,genie,강남점|판교점|해운대점,표준 지표와 표준 차원
+A002,판매수량 기준 인기메뉴 TOP3 알려줘,structured,genie,TOP 3,기준이 명시되어 바로 Genie 호출
+A003,날짜별 매출 추이를 보여줘,structured,genie,기간|추이,매출 기본값은 순매출
+A004,카테고리별 객단가 비교해줘,structured,genie,커피|음료|푸드|디저트,객단가 표준 지표
+A005,주말과 평일 매출을 비교해줘,structured,genie,주말|평일,주말 정의는 Metric View 차원
+A006,전체 할인액은 얼마야?,structured,genie,할인,표준 지표
+A007,아메 매출 알려줘,glossary_then_structured,ai_search>genie,아메리카노,비표준 상품 별칭
+A008,피크타임이 언제야?,glossary_then_structured,ai_search>genie,시간대,용어 정의 검색 후 분석
+A009,라떼 매출 알려줘,clarify,ai_search,카페라떼|바닐라라떼,명확화 전 Genie를 호출하지 않음
+A010,손님 수가 가장 많은 매장은?,clarify,ai_search,주문수|판매수량,현재 데이터 범위를 설명
