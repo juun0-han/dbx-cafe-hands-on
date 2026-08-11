@@ -13,3 +13,4 @@ _previews_v2/
 *.inspect.ndjson
 *.errors.ndjson
 *.zip
+~$*.xlsx

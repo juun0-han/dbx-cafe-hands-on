@@ -16,7 +16,8 @@ SELECT
   _metadata.file_path AS _source_file,
   current_timestamp() AS _ingested_at
 FROM STREAM read_files(
-  '/Volumes/cafe_training/cafe_landing/raw/stores.csv',
+  -- Streaming read_files는 파일 경로 대신 디렉터리 또는 glob 경로를 사용합니다.
+  '/Volumes/cafe_training/cafe_landing/raw/stores*.csv',
   format => 'csv',
   header => 'true',
   inferColumnTypes => 'false'
@@ -33,7 +34,8 @@ SELECT
   _metadata.file_path AS _source_file,
   current_timestamp() AS _ingested_at
 FROM STREAM read_files(
-  '/Volumes/cafe_training/cafe_landing/raw/products.csv',
+  -- Streaming read_files는 파일 경로 대신 디렉터리 또는 glob 경로를 사용합니다.
+  '/Volumes/cafe_training/cafe_landing/raw/products*.csv',
   format => 'csv',
   header => 'true',
   inferColumnTypes => 'false'
