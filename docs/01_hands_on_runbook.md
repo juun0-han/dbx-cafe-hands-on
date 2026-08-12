@@ -72,6 +72,89 @@ resources/
 sample_data/
 ```
 
+### 2-1. 먼저 열어볼 문서
+
+Git folder를 만든 직후 다음 가이드부터 엽니다.
+
+```text
+docs/01_hands_on_runbook.md
+```
+
+함께 확인할 문서:
+
+```text
+README.md
+docs/00_start_here.md
+HANDS_ON_SESSION_DESIGN.md
+```
+
+`docs/01_hands_on_runbook.md`에는 현재 실습에 사용하는 이름, 경로, 화면 입력값, 검증값이 모두 정리되어 있습니다.
+Git folder clone이나 GitHub ZIP 다운로드에 이 파일이 포함되어 있는지 확인하고, 실습 중에는 이 문서를 함께 열어 둡니다.
+
+### 2-2. 로컬 PC로 파일 내려받기
+
+Volume 업로드 화면은 로컬 파일을 선택하므로, 다음 방법 중 하나로 저장소 파일을 로컬 PC에 준비합니다.
+
+방법 A: GitHub 저장소 화면에서 `Code > Download ZIP`을 선택한 뒤 압축을 해제합니다.
+
+방법 B: GitHub 저장소를 로컬 PC에 clone합니다.
+
+```powershell
+git clone https://github.com/juun0-han/dbx-cafe-hands-on.git
+```
+
+Git folder 안의 문서·노트북은 Workspace에서 직접 열어도 됩니다. 로컬 다운로드는 아래 Volume 업로드 파일과 Excel·CSV 참고 파일을 확인할 때 사용합니다.
+
+### 2-3. Volume에 업로드할 파일
+
+다음 6개 파일만 Volume에 업로드합니다.
+
+```text
+sample_data/raw/stores.csv
+sample_data/raw/products.csv
+sample_data/raw/orders/orders_batch_001.csv
+sample_data/raw/orders/orders_batch_002.csv
+sample_data/raw/orders/orders_batch_003.csv
+sample_data/support/glossary.csv
+```
+
+README, 노트북, YAML, Markdown, Excel, 평가용 CSV는 Volume에 업로드하지 않습니다.
+
+### 2-4. 실습 중 열어볼 참고 파일
+
+| 시점 | 열어볼 파일 | 용도 |
+|---|---|---|
+| 시작 | `docs/01_hands_on_runbook.md` | 전체 실행 절차 |
+| 시작 | `docs/00_start_here.md` | Catalog·Schema·Volume 준비 |
+| 시작 | `README.md` | 저장소 구조와 실행 순서 |
+| Pipeline | `notebooks/01_cafe_medallion_pipeline.sql` | Bronze·Silver·Gold 소스 확인 |
+| Pipeline 검증 | `notebooks/04_pipeline_validate.sql` | Job 검증 SQL 확인 |
+| 기대값 확인 | `sample_data/support/expected_results.csv` | 행 수와 지표 기대값 확인 |
+| 데이터 설명 | `sample_data/support/data_dictionary.csv` | 컬럼과 업무 의미 확인 |
+| Metric View | `notebooks/02_metric_view_baseline.sql` | 기준선 정의 확인 |
+| Metric View | `notebooks/03_metric_view_optimized.sql` | 설명·동의어·포맷 확인 |
+| Genie 지침 | `resources/genie_instructions.md` | 일반 지침 입력 |
+| Genie 질문 | `resources/genie_questions.md` | 기본·분석·다의어 질문 |
+| Genie 예제 | `sample_data/support/genie_example_queries.csv` | Example Query 입력 SQL |
+| Genie 평가 | `sample_data/support/genie_benchmarks.csv` | Benchmark 질문과 정답 |
+| AI Search | `sample_data/support/glossary.csv` | 용어집 원본 |
+| Agent 평가 | `sample_data/support/agent_evaluation.csv` | Agent 평가 질문 |
+| Apps | `resources/supervisor_prompt.md` | Supervisor 지침 |
+| Apps | `resources/app.yaml.example` | App 설정 예시 |
+| Apps | `resources/app_resource_binding.example.yml` | App 리소스 연결 예시 |
+| MLflow | `notebooks/06_mlflow_monitoring.py` | Trace·평가 확인 |
+
+### 2-5. Excel 파일 사용
+
+다음 Excel 파일은 참고용이며 Volume에 업로드하지 않습니다.
+
+```text
+cafe_hands_on_assets.xlsx
+cafe_sample_data_review.xlsx
+```
+
+Excel에서는 샘플 데이터, 데이터 사전, 기대 결과, Genie 질문·Benchmark 구성을 한눈에 확인할 수 있습니다. 실행 중 값이 예상과 다를 때 `expected_results.csv`와 함께 확인합니다.
+
 ## 3. Catalog, Schema, Volume 준비
 
 Git folder에서 다음 파일을 열고 SQL Warehouse를 연결한 뒤 `Run all`을 클릭합니다.
