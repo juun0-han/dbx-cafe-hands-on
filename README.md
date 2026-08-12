@@ -16,6 +16,7 @@
 
 전체 실습 설계는 [`HANDS_ON_SESSION_DESIGN.md`](HANDS_ON_SESSION_DESIGN.md)를 참고합니다.
 GitHub 저장소 연결 절차는 [`docs/00_github_publish.md`](docs/00_github_publish.md)를 참고합니다.
+처음부터 따라 하는 실행 절차는 [`docs/01_hands_on_runbook.md`](docs/01_hands_on_runbook.md)를 참고합니다.
 
 ## Unity Catalog 이름
 
