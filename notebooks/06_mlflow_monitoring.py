@@ -55,7 +55,7 @@ else:
 # MAGIC ## 선택 실습: 프로덕션 샘플링 모니터링
 # MAGIC
 # MAGIC 이 기능은 워크스페이스에서 Production Monitoring Preview가 활성화된 경우에만 실행합니다.
-# MAGIC 기초 실습에서는 아래 코드를 읽고, 강사 데모로만 실행해도 됩니다.
+# MAGIC 아래 코드를 실행해 Trace와 평가 결과를 확인합니다.
 
 # COMMAND ----------
 

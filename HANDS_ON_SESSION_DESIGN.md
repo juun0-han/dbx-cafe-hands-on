@@ -1,8 +1,7 @@
 # Databricks 카페 End-to-End 핸즈온 설계
 
-기준일: 2026-08-10  
 대상: Databricks 입문자  
-방식: 코드 입력 없이 강사가 제공한 데이터·노트북·설정 파일을 실행하고 UI에서 구성  
+방식: 코드 입력 없이 제공된 데이터·노트북·설정 파일을 실행하고 UI에서 구성  
 권장 시간: 5시간 15분(휴식 포함), 또는 3시간 + 2시간 15분의 2개 세션
 
 ---
@@ -38,20 +37,7 @@ flowchart LR
     GE --> GB["Genie Monitor / Benchmark"]
 ```
 
-### 1.1 `lotte_hotel` 참고 구조를 카페 실습으로 축소한 방식
-
-참고 프로젝트의 폴더와 구현을 그대로 복사하지 않고, 각 단계가 다음 단계의 입력이 되는 End-to-End 구조만 유지한다.
-
-| `lotte_hotel`의 구조 | 카페 핸즈온 매핑 | 단순화 원칙 |
-|---|---|---|
-| `01_ingest_landing`~`04_gold` | Volume → Bronze → Silver → Gold | 여러 프로젝트를 하나의 SDP Pipeline으로 통합 |
-| `05_metadata_factory` | `data_dictionary.csv`, Metric View 설명·동의어 | 생성 팩토리 대신 완성된 최소 메타데이터 제공 |
-| `08_genie_space` | Metric View 기반 Genie Agent | 테이블 수를 1개로 제한하고 질문·Benchmark만 실습 |
-| `09_ai_agent_app` | AI Search + Supervisor + Databricks App | 장기 메모리·복잡한 UI 없이 공식 Agent App 템플릿 사용 |
-| Agent 평가 스크립트 | Genie Benchmark + `agent_evaluation.csv` + MLflow | SQL 정답과 Tool routing 평가를 분리 |
-| Bundle 설정 | Pipeline/Job Bundle YAML | 환경별 변수는 Catalog, Schema, Warehouse만 유지 |
-
-SFTP Export, 객실 재예약 ML, 대규모 메타데이터 자동 생성, 거버넌스·대시보드 전체 구현은 이번 학습 목표와 직접 연결되지 않으므로 제외한다.
+SFTP Export, 고객 예약 ML, 대규모 메타데이터 자동 생성, 거버넌스·대시보드 전체 구현은 이번 학습 목표와 직접 연결되지 않으므로 제외한다.
 
 ---
 
@@ -59,7 +45,7 @@ SFTP Export, 객실 재예약 ML, 대규모 메타데이터 자동 생성, 거�
 
 ### 2.1 원천 데이터는 재생성하지 않는다
 
-기존 데이터가 실습 목적에 이미 충분하므로 원천 CSV는 그대로 유지한다.
+원천 CSV는 카페 매장·상품·주문 분석에 필요한 최소 데이터로 구성한다.
 
 | 파일 | 크기 | 역할 |
 |---|---:|---|
@@ -171,13 +157,6 @@ SFTP Export, 객실 재예약 ML, 대규모 메타데이터 자동 생성, 거�
 6. Bronze가 새 파일만 증분 처리하는 것을 확인한다.
 7. Data quality 화면에서 잘못된 수량이 DROP된 것을 확인한다.
 8. `cafe_medallion_job`을 Run now 하고 Pipeline → Validation 태스크 의존성을 확인한다.
-
-### 강사 설명
-
-- Pipeline 내부의 테이블 순서는 코드 줄 순서가 아니라 데이터 의존성으로 결정된다.
-- Job은 Pipeline을 실행하고 후속 검증이나 알림 같은 운영 태스크를 연결한다.
-- 기초 실습은 Triggered 모드를 사용한다. Continuous는 비용과 운영 설명이 늘어나므로 제외한다.
-- 파이프라인은 Serverless, Unity Catalog 게시, Event Log 게시를 기본으로 한다.
 
 ### 완료 기준
 
@@ -402,7 +381,7 @@ flowchart LR
 - 최소 권한을 사용한다.
 - 사용자 질문 본문 전체를 App 로그에 출력하지 않는다.
 - 기초 세션에서는 채팅 영속화를 사용하지 않는다. App 재시작 후 이력이 사라지는 점을 명시한다.
-- App 배포 시간은 참가자 실습 시간을 잡아먹으므로 강사가 동일 템플릿을 미리 한 번 배포해 둔다.
+- App 배포 시간은 세션 일정에 반영한다.
 
 ---
 
@@ -433,7 +412,7 @@ flowchart LR
 3. 입력·출력·Genie/AI Search Tool span·latency를 확인한다.
 4. 세 가지 기본 Scorer로 개발 평가를 실행한다.
 5. 앱의 좋아요/싫어요가 Trace Assessment로 연결되는지 확인한다.
-6. Production Monitoring Preview가 활성화되어 있으면 Safety scorer의 50% 샘플링을 강사가 데모한다.
+6. Production Monitoring Preview가 활성화되어 있으면 Safety scorer의 50% 샘플링을 확인한다.
 
 ### 운영 대시보드 최소 지표
 
@@ -446,7 +425,7 @@ flowchart LR
 | 좋아요 비율 | 80% 이상 |
 | 응답 latency p95 | 워크스페이스 기준선 대비 관리 |
 
-절대 latency 목표는 모델·Warehouse·리전·동시 사용자에 따라 달라지므로 강사가 임의의 고정 SLA를 약속하지 않는다. 첫 실행의 cold start와 이후 실행을 구분해서 관찰한다.
+절대 latency 목표는 모델·Warehouse·리전·동시 사용자에 따라 달라지므로 고정 SLA를 설정하지 않는다. 첫 실행의 cold start와 이후 실행을 구분해서 관찰한다.
 
 ---
 
@@ -471,7 +450,7 @@ flowchart LR
 
 ---
 
-## 6. 강사 사전 준비 체크리스트
+## 6. 실행 전 확인
 
 ### 워크스페이스 기능
 
@@ -494,15 +473,15 @@ flowchart LR
 - AI Search endpoint/index 생성 권한
 - MLflow Experiment 편집 권한
 
-### 배포 전 확인
+### 실행 전 확인
 
-1. 참가자는 개인 Workspace에서 기본 Catalog `cafe_training`을 사용한다. 해당 Catalog를 만들 권한이 없으면 강사가 메타스토어에 한 번만 생성한다.
+1. 개인 Workspace에서 기본 Catalog `cafe_training`을 사용한다. 해당 Catalog를 만들 권한이 없으면 Catalog 관리자에게 생성을 요청한다.
 2. 원천 CSV와 지원 CSV를 Volume에 업로드한다.
 3. Pipeline을 미리 한 번 Validate한다.
 4. AI Search endpoint의 embedding model 접근을 확인한다.
-5. App 템플릿을 미리 한 번 배포해 cold build 시간을 제거한다.
+5. App 템플릿을 배포해 cold build 시간을 확인한다.
 6. `04_validate.sql`의 모든 기대값이 맞는지 확인한다.
-7. Genie 기준선 Benchmark는 참가자 실습 전 빈 상태로 복제하거나 별도 Agent를 준비한다.
+7. Genie Benchmark 실행에 사용할 Agent와 평가 질문을 확인한다.
 
 ---
 
@@ -546,7 +525,7 @@ databricks_cafe_hands_on/
 └─ docs/00_github_publish.md
 ```
 
-CSV는 Databricks 업로드용이고, XLSX는 강사의 데이터·정답·평가셋 검토용이다.
+CSV는 Databricks 업로드용이고, XLSX는 데이터·정답·평가셋 검토용이다.
 
 ---
 

@@ -3,7 +3,7 @@
 -- MAGIC # 00. 카페 핸즈온 환경 준비
 -- MAGIC
 -- MAGIC 개인 Workspace에서 실행하는 시작 노트북입니다.
--- MAGIC 기본 Catalog는 `cafe_training`입니다. Catalog 생성 권한이 없으면 강사가 먼저 Catalog만 생성합니다.
+-- MAGIC 기본 Catalog는 `cafe_training`입니다. Catalog 생성 권한이 없으면 Catalog 관리자에게 생성을 요청합니다.
 
 -- COMMAND ----------
 

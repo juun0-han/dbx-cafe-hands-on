@@ -2,7 +2,7 @@
 # MAGIC %md
 # MAGIC # 05. 카페 용어집 AI Search 구성
 # MAGIC
-# MAGIC 강사가 제공한 `glossary.csv`를 Delta 테이블로 만들고 Triggered Delta Sync Index를 생성합니다.
+# MAGIC 제공된 `glossary.csv`를 Delta 테이블로 만들고 Triggered Delta Sync Index를 생성합니다.
 # MAGIC 참가자는 셀을 순서대로 실행하고 마지막 검색 결과만 확인합니다.
 
 # COMMAND ----------
