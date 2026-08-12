@@ -1,9 +1,4 @@
 # Databricks 카페 End-to-End 핸즈온 설계
-
-대상: Databricks 입문자  
-방식: 코드 입력 없이 제공된 데이터·노트북·설정 파일을 실행하고 UI에서 구성  
-권장 시간: 5시간 15분(휴식 포함), 또는 3시간 + 2시간 15분의 2개 세션
-
 ---
 
 ## 1. 최종 목표
@@ -36,8 +31,6 @@ flowchart LR
     SA --> MF["MLflow Trace / Evaluation"]
     GE --> GB["Genie Monitor / Benchmark"]
 ```
-
-SFTP Export, 고객 예약 ML, 대규모 메타데이터 자동 생성, 거버넌스·대시보드 전체 구현은 이번 학습 목표와 직접 연결되지 않으므로 제외한다.
 
 ---
 
@@ -529,23 +522,7 @@ CSV는 Databricks 업로드용이고, XLSX는 데이터·정답·평가셋 검�
 
 ---
 
-## 8. 의도적으로 제외한 복잡도
-
-- 고객·멤버십·재고·날씨 데이터
-- 여러 Gold Fact와 다수 Metric View
-- CDC/SCD Type 2
-- Continuous Pipeline
-- 복잡한 Window Measure
-- Agent 장기 메모리와 Lakebase
-- 커스텀 React UI 개발
-- 여러 Supervisor 하위 Agent
-- 운영용 대규모 부하 테스트
-
-이 항목들은 기초 학습 목표를 흐리므로 후속 세션으로 분리한다.
-
----
-
-## 9. 성공 기준
+## 8. 성공 기준
 
 세션이 끝났을 때 참가자는 다음을 설명하거나 보여줄 수 있어야 한다.
 
@@ -562,7 +539,7 @@ CSV는 Databricks 업로드용이고, XLSX는 데이터·정답·평가셋 검�
 
 ---
 
-## 10. Databricks 공식 참고 문서
+## 9. Databricks 공식 참고 문서
 
 - [Spark Declarative Pipelines](https://docs.databricks.com/aws/en/ldp)
 - [Lakeflow Pipelines best practices](https://docs.databricks.com/aws/en/ldp/best-practices)
