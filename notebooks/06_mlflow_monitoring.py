@@ -7,7 +7,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install -q --upgrade "mlflow[databricks]>=3.1"
+# MAGIC %pip install -q --upgrade "mlflow[databricks]>=3.4.0"
 # MAGIC dbutils.library.restartPython()
 
 # COMMAND ----------
@@ -45,7 +45,9 @@ if len(traces) > 0:
             ToolCallCorrectness(),
         ],
     )
-    display(evaluation.tables["eval_results_table"])
+    print("Evaluation metrics:")
+    print(evaluation.metrics)
+    display(evaluation.result_df)
 else:
     print("평가할 Trace가 없습니다. App에서 질문을 먼저 실행하세요.")
 

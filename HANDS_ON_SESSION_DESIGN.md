@@ -216,12 +216,23 @@ Databricks 권장사항에 맞춰 처음에는 1개 Metric View만 연결한다.
 
 ### 품질 개선 순서
 
-1. **기준선**: Metric View만 연결하고 12개 Benchmark 실행
-2. **Metadata**: 표시명·설명·동의어 추가
-3. **예제 SQL**: 검증된 6개 예제 추가
-4. **짧은 지침**: 매출 기본값, 최근 기간, 명확화 규칙만 추가
-5. **재평가**: 동일 Benchmark 재실행
-6. **오류 수정**: 생성 SQL 검토 → 올바른 SQL로 수정 → Add as instruction
+1. **기준선**: Metric View 하나만 연결하고 12개 Benchmark 실행
+2. **의미 계층**: 필드·측정값의 표시명·설명·동의어·포맷 정의
+3. **예제 SQL**: 검증된 6개 질문·SQL 패턴 추가
+4. **일반 지침**: 여러 질문에 공통으로 적용되는 해석·응답 원칙만 추가
+5. **재평가**: 동일 Benchmark를 같은 모드로 재실행
+6. **오류 수정**: 생성 SQL과 SQL Answer를 비교하고 필요한 구성 요소 하나만 수정
+7. **회귀 확인**: 수정 문항 외의 문항도 Accuracy 저하 여부 확인
+
+### 구성 요소별 역할
+
+| 구성 요소 | 주요 내용 |
+|---|---|
+| Metric View | 필드·측정값 의미, 표시명, 설명, 동의어, 포맷, 공통 업무 규칙 |
+| Example Query | 대표 질문과 검증된 SQL 패턴 |
+| Instruction | 여러 질문에 공통으로 적용되는 해석·응답 원칙 |
+| Benchmark | 질문, SQL Answer, Evaluation note를 이용한 반복 평가 |
+| Monitor | 실제 질문, 생성 SQL, 사용자 피드백, 반복 오류 |
 
 ### 벤치마크 구성
 
@@ -241,12 +252,21 @@ Agent Benchmark는 다음 행동을 평가한다.
 
 ### 모니터링 실습
 
-1. Monitor 탭에서 질문·응답·평점·상태로 필터링한다.
-2. 틀린 질문 하나를 `Fix it` 또는 `Request review`로 표시한다.
-3. 생성 SQL을 열어 오류를 확인한다.
-4. 수정된 SQL을 Example instruction으로 저장한다.
-5. 해당 Benchmark만 재실행한다.
-6. Weekly digest에서 메시지 수·활성 사용자·좋아요/싫어요를 확인한다.
+1. `Evaluations`에서 기준선 Accuracy, Good, Bad, Manual Review를 기록한다.
+2. `Monitor` 탭에서 질문·응답·생성 SQL·평점·상태로 필터링한다.
+3. 반복되거나 잘못된 질문 하나를 선택하고 `Show code`로 생성 SQL을 확인한다.
+4. Metric View, Example Query, Instruction, Benchmark 중 원인에 맞는 한 곳만 수정한다.
+5. 검증된 SQL을 저장할 때는 `Add as instruction`을 사용한다.
+6. 동일 Benchmark를 재실행하고 개선 전후 Accuracy와 회귀 여부를 기록한다.
+7. Weekly digest에서 메시지 수·활성 사용자·좋아요/싫어요를 확인한다.
+
+### 일반적인 Instruction 작성 원칙
+
+- 전체 Instruction을 질문별 규칙 모음으로 만들지 않는다.
+- 여러 질문에 공통으로 적용되는 규칙만 추가한다.
+- 데이터에 없는 정보나 원인을 추정하도록 지시하지 않는다.
+- Metric View에 정의된 측정값을 원시 컬럼으로 다시 계산하도록 지시하지 않는다.
+- 기간·비교 기준·집계 수준처럼 결과에 큰 영향을 주는 조건이 모호하면 짧게 확인하도록 한다.
 
 ### 완료 기준
 
@@ -284,13 +304,18 @@ Triggered Sync는 19행짜리 교육 데이터에 Continuous Sync 비용을 사�
 
 1. `glossary.csv`를 Volume에 업로드한다.
 2. `05_create_ai_search.py`를 실행한다.
-3. Delta table, endpoint, index, Triggered sync 상태를 확인한다.
-4. `아메 매출`, `피크타임`, `라떼 매출`로 Hybrid 검색한다.
-5. Top 3 결과가 질문의 올바른 규칙을 포함하는지 확인한다.
+3. `cafe_training.cafe_hands_on.cafe_glossary` Delta table의 19행과 Change Data Feed를 확인한다.
+4. `cafe-ai-search-endpoint`가 `ONLINE`이 될 때까지 기다린다.
+5. `cafe_training.cafe_hands_on.cafe_glossary_index`를 Triggered Delta Sync로 생성하고 `index.sync()`를 실행한다.
+6. Index가 `ONLINE`이고 19행을 인덱싱했는지 확인한다.
+7. `아메 매출`, `피크타임`, `라떼 매출`, `손님수`로 Hybrid 검색한다.
+8. Top 3 결과에 표준 용어와 resolution rule이 포함되는지 확인한다.
 
 ### 완료 기준
 
 - Index 상태 ONLINE
+- Endpoint 상태 ONLINE
+- Triggered Sync 완료
 - `아메` 검색 결과에 `아메리카노` 포함
 - `라떼` 검색 결과에 명확화 규칙 포함
 - `손님수` 검색 결과에 미지원 및 대체 지표 규칙 포함
@@ -337,7 +362,7 @@ Supervisor의 목적은 `Genie 단독 호출`, `용어집 후 Genie`, `명확화
 
 ## 4.6 Databricks Apps
 
-롯데호텔 프로젝트와 같은 구조를 유지하되 프런트엔드 커스터마이징은 하지 않는다.
+기존 Agent App 구조를 유지하되 프런트엔드 커스터마이징은 하지 않는다.
 
 ```mermaid
 flowchart LR
@@ -360,12 +385,12 @@ flowchart LR
 
 ### 참가자 실습
 
-1. 공식 Agent App 템플릿을 설치한다.
-2. 기존 Supervisor Agent 코드를 배포한다.
-3. Genie와 MLflow Experiment는 Bundle 예시를 사용하고, AI Search Index는 App UI에서 `cafe_glossary_index` 키와 `CAN SELECT` 권한으로 추가한다.
-4. OBO 범위 `genie`, `vector-search`, `ai-gateway`를 확인한다.
-5. 앱에서 표준 질문, 용어 질문, 명확화 질문을 각각 한 번 실행한다.
-6. 응답에 좋아요/싫어요를 남긴다.
+1. AI Playground에서 `Get code > Export to Databricks Apps`를 선택한다.
+2. App 이름을 `agent-cafe-supervisor`로 지정하고 MLflow Experiment를 연결한다.
+3. App Resources에서 Genie Agent는 `Can run`, AI Search Index는 `Can select`, MLflow Experiment는 `Can edit` 이상으로 연결한다.
+4. `app.yaml.example`의 `cafe_genie`, `cafe_glossary_index`, `cafe_experiment` 키와 Resource key를 일치시킨다.
+5. 앱에서 표준 질문, 용어 질문, 명확화 질문, 미지원 개념 질문을 각각 실행한다.
+6. 각 질문의 Supervisor Tool routing과 응답을 확인한다.
 
 ### 운영 주의사항
 
@@ -400,12 +425,12 @@ flowchart LR
 
 ### 참가자 실습
 
-1. App에서 `agent_evaluation.csv`의 질문을 실행한다.
-2. `06_mlflow_monitoring.py`로 최근 Trace를 조회한다.
-3. 입력·출력·Genie/AI Search Tool span·latency를 확인한다.
-4. 세 가지 기본 Scorer로 개발 평가를 실행한다.
-5. 앱의 좋아요/싫어요가 Trace Assessment로 연결되는지 확인한다.
-6. Production Monitoring Preview가 활성화되어 있으면 Safety scorer의 50% 샘플링을 확인한다.
+1. App에서 `agent_evaluation.csv`의 질문을 실행해 Trace를 생성한다.
+2. `06_mlflow_monitoring.py`에서 App과 동일한 Experiment path를 설정한다.
+3. 최근 Trace의 입력·출력·Genie/AI Search Tool span·latency를 확인한다.
+4. `RelevanceToQuery`, `Safety`, `ToolCallCorrectness`로 개발 평가를 실행한다.
+5. MLflow Experiment UI의 Traces·Evaluations 탭에서 결과를 확인한다.
+6. Production Monitoring Preview가 활성화되어 있으면 Safety scorer의 50% 샘플링을 선택 실행한다.
 
 ### 운영 대시보드 최소 지표
 
@@ -417,6 +442,16 @@ flowchart LR
 | 오류 없는 응답 비율 | 95% 이상 |
 | 좋아요 비율 | 80% 이상 |
 | 응답 latency p95 | 워크스페이스 기준선 대비 관리 |
+
+### MLflow 실습 파일과 출력
+
+| 항목 | 파일 또는 화면 | 확인 내용 |
+|---|---|---|
+| Trace 생성 | `agent_evaluation.csv`, Databricks App | 질문·응답·Tool routing |
+| Trace 조회 | `notebooks/06_mlflow_monitoring.py` | 최근 Trace와 latency |
+| 개발 평가 | `mlflow.genai.evaluate()` | Relevance·Safety·ToolCall |
+| 결과 확인 | MLflow Experiment > Traces/Evaluations | 문항별 결과와 실패 원인 |
+| 운영 모니터링 | Production Monitoring Preview | 샘플링 Scorer |
 
 절대 latency 목표는 모델·Warehouse·리전·동시 사용자에 따라 달라지므로 고정 SLA를 설정하지 않는다. 첫 실행의 cold start와 이후 실행을 구분해서 관찰한다.
 
@@ -536,6 +571,20 @@ CSV는 Databricks 업로드용이고, XLSX는 데이터·정답·평가셋 검�
 - Supervisor가 명확화해야 하는 질문
 - App Resource binding과 OBO가 필요한 이유
 - MLflow Trace에서 Tool 호출과 latency를 확인하는 방법
+
+### 최종 통합 검증
+
+1. App에서 표준 질문, 용어 질문, 다의어 질문, 미지원 개념 질문을 새 대화로 실행한다.
+2. 질문별 기대 Tool 경로와 실제 Tool 경로를 비교한다.
+3. MLflow Experiment에서 네 질문의 Trace와 Tool span을 확인한다.
+4. 데이터 행 수, Metric View 지표, Genie 평가, AI Search 상태, App 상태를 최종 기록한다.
+
+| 질문 유형 | 기대 경로 | 검증 포인트 |
+|---|---|---|
+| 표준 정량 | Genie | Genie만 호출 |
+| 용어·별칭 | AI Search → Genie | 표준 용어 확정 후 분석 |
+| 다의어 | AI Search | 명확화 후 Genie 대기 |
+| 미지원 개념 | AI Search | 데이터 범위와 대체 지표 안내 |
 
 ---
 
