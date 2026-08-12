@@ -91,8 +91,6 @@ HANDS_ON_SESSION_DESIGN.md
 `docs/01_hands_on_runbook.md`에는 현재 실습에 사용하는 이름, 경로, 화면 입력값, 검증값이 모두 정리되어 있습니다.
 Git folder clone이나 GitHub ZIP 다운로드에 이 파일이 포함되어 있는지 확인하고, 실습 중에는 이 문서를 함께 열어 둡니다.
 
-저장소의 CSV는 Windows Excel에서 한글이 깨지지 않도록 UTF-8 BOM 형식으로 제공됩니다. 이전에 ZIP을 내려받았다면 최신 `main` 브랜치에서 다시 내려받습니다.
-
 ### 2-2. 로컬 PC로 파일 내려받기
 
 Volume 업로드 화면은 로컬 파일을 선택하므로, 다음 방법 중 하나로 저장소 파일을 로컬 PC에 준비합니다.
@@ -402,10 +400,39 @@ Cafe Sales Genie Agent
 cafe_training.cafe_hands_on.cafe_sales_metrics
 ```
 
-`Configure > Context > Instructions`에 다음 파일의 내용을 입력합니다.
+`Configure > Context > Instructions`의 입력값:
 
 ```text
-resources/genie_instructions.md
+# 카페 매출 Genie Agent 지침
+
+## 목적과 범위
+
+- 이 Agent는 카페의 완료 주문을 대상으로 매장·상품·카테고리·날짜·요일·시간대별 매출을 분석한다.
+- 데이터 범위는 `cafe_sales_metrics` Metric View에 정의된 필드와 측정값으로 제한한다.
+- 응답은 한국어 존댓말로 작성하고, 사용한 기간과 지표명을 함께 명시한다.
+
+## 지표 규칙
+
+- 사용자가 `매출`이라고만 하면 `순매출(net_sales)`을 사용한다.
+- `총매출` 또는 `할인 전 매출`이라고 하면 `gross_sales`를 사용한다.
+- `객단가`는 `순매출 ÷ 주문수`다.
+- `주문수`와 `판매수량`을 구분한다.
+- 취소 주문은 모든 매출 지표에서 제외한다.
+- `최근`은 데이터 최대 일자를 기준으로 직전 7일이며, 응답에 실제 시작일과 종료일을 적는다.
+
+## 명확화 규칙
+
+- `인기메뉴`의 기준이 없으면 매출 기준인지 판매수량 기준인지 되묻는다.
+- `라떼`라고만 하면 카페라떼와 바닐라라떼 중 어느 상품인지 되묻는다.
+- `손님수`, `고객수`, `방문객수`는 현재 데이터로 직접 계산할 수 없다. 주문수 또는 판매수량을 대신 볼지 되묻는다.
+- 기간이 필요한 비교 질문에 기간이 없고 `최근` 규칙도 적용되지 않으면 기간을 되묻는다.
+
+## 요약 규칙
+
+- 숫자는 원 단위와 건/개 단위를 표시한다.
+- 비교 결과는 가장 큰 값과 가장 작은 값을 한 문장으로 요약한다.
+- 가능한 경우 표를 먼저 제시하고 핵심 해석을 2~3문장 이내로 덧붙인다.
+- 데이터에 없는 원인이나 고객 행동을 사실처럼 추정하지 않는다.
 ```
 
 ## 10. Genie Example Query 등록
@@ -430,24 +457,15 @@ Join
 | Field | 사용하지 않음 | 컬럼 설명·동의어 |
 | Join | 사용하지 않음 | 여러 데이터 자산 관계 |
 
-다음 파일을 참고해 Example Query 6개를 등록합니다.
+다음 파일의 6개 항목을 Example Query로 등록합니다.
 
 ```text
 sample_data/support/genie_example_queries.csv
 ```
 
-등록 질문:
+각 항목의 `Question`과 `SQL`을 하나의 Example Query로 입력합니다.
 
-```text
-전체 기간 순매출은 얼마야?
-매장별 순매출을 비교해줘
-판매수량 기준 TOP 3 메뉴는?
-일자별 순매출 추이를 보여줘
-시간대별 순매출과 주문수를 비교해줘
-매장별 객단가가 높은 순서로 보여줘
-```
-
-첫 번째 입력 예시:
+### E001
 
 Question:
 
@@ -458,9 +476,100 @@ Question:
 SQL:
 
 ```sql
-SELECT
-  MEASURE(net_sales) AS net_sales
+SELECT MEASURE(net_sales) AS net_sales
 FROM cafe_training.cafe_hands_on.cafe_sales_metrics;
+```
+
+### E002
+
+Question:
+
+```text
+매장별 순매출을 비교해줘
+```
+
+SQL:
+
+```sql
+SELECT store_name,
+       MEASURE(net_sales) AS net_sales
+FROM cafe_training.cafe_hands_on.cafe_sales_metrics
+GROUP BY store_name
+ORDER BY net_sales DESC;
+```
+
+### E003
+
+Question:
+
+```text
+판매수량 기준 TOP 3 메뉴는?
+```
+
+SQL:
+
+```sql
+SELECT product_name,
+       MEASURE(item_quantity) AS item_quantity
+FROM cafe_training.cafe_hands_on.cafe_sales_metrics
+GROUP BY product_name
+ORDER BY item_quantity DESC
+LIMIT 3;
+```
+
+### E004
+
+Question:
+
+```text
+일자별 순매출 추이를 보여줘
+```
+
+SQL:
+
+```sql
+SELECT order_date,
+       MEASURE(net_sales) AS net_sales
+FROM cafe_training.cafe_hands_on.cafe_sales_metrics
+GROUP BY order_date
+ORDER BY order_date;
+```
+
+### E005
+
+Question:
+
+```text
+시간대별 순매출과 주문수를 비교해줘
+```
+
+SQL:
+
+```sql
+SELECT daypart,
+       MEASURE(net_sales) AS net_sales,
+       MEASURE(order_count) AS order_count
+FROM cafe_training.cafe_hands_on.cafe_sales_metrics
+GROUP BY daypart
+ORDER BY net_sales DESC;
+```
+
+### E006
+
+Question:
+
+```text
+매장별 객단가가 높은 순서로 보여줘
+```
+
+SQL:
+
+```sql
+SELECT store_name,
+       MEASURE(avg_order_value) AS avg_order_value
+FROM cafe_training.cafe_hands_on.cafe_sales_metrics
+GROUP BY store_name
+ORDER BY avg_order_value DESC;
 ```
 
 채팅 화면에서 다음 질문을 테스트합니다.
@@ -506,32 +615,3 @@ FROM cafe_training.cafe_hands_on.cafe_sales_metrics;
 - 순매출 질문 정상 응답
 - 다의어 질문에서 되묻는 응답 확인
 
-## 12. 오류 확인
-
-### Input path is not a directory
-
-Pipeline SQL의 입력 경로가 다음과 같은지 확인합니다.
-
-```text
-/Volumes/cafe_training/cafe_landing/raw/stores*.csv
-/Volumes/cafe_training/cafe_landing/raw/products*.csv
-/Volumes/cafe_training/cafe_landing/raw/orders
-```
-
-### Dataset could not be resolved
-
-Pipeline 실행 성공 여부와 `cafe_training.cafe_hands_on` Catalog·Schema를 확인합니다.
-
-### Job SQL File을 찾을 수 없음
-
-SQL File 경로는 저장소 루트 기준 상대 경로로 입력합니다.
-
-```text
-notebooks/04_pipeline_validate.sql
-```
-
-앞에 `/` 또는 `./`를 붙이지 않습니다.
-
-### Genie Add 메뉴 선택
-
-현재 단계에서는 `Example Query`를 선택합니다. Metric View에 의미 정보와 지표가 있으므로 `Filter`, `Measure`, `Field`, `Join`은 추가하지 않습니다.
