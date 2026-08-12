@@ -91,6 +91,8 @@ HANDS_ON_SESSION_DESIGN.md
 `docs/01_hands_on_runbook.md`에는 현재 실습에 사용하는 이름, 경로, 화면 입력값, 검증값이 모두 정리되어 있습니다.
 Git folder clone이나 GitHub ZIP 다운로드에 이 파일이 포함되어 있는지 확인하고, 실습 중에는 이 문서를 함께 열어 둡니다.
 
+저장소의 CSV는 Windows Excel에서 한글이 깨지지 않도록 UTF-8 BOM 형식으로 제공됩니다. 이전에 ZIP을 내려받았다면 최신 `main` 브랜치에서 다시 내려받습니다.
+
 ### 2-2. 로컬 PC로 파일 내려받기
 
 Volume 업로드 화면은 로컬 파일을 선택하므로, 다음 방법 중 하나로 저장소 파일을 로컬 PC에 준비합니다.

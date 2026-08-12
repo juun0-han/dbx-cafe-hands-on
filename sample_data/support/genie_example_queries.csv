@@ -1,4 +1,4 @@
-example_id,category,question,sql_answer,teaching_point
+﻿example_id,category,question,sql_answer,teaching_point
 E001,기본,전체 기간 순매출은 얼마야?,SELECT MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics,매출의 기본값은 순매출
 E002,기본,매장별 순매출을 비교해줘,"SELECT store_name, MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY store_name ORDER BY net_sales DESC",매장 차원과 순매출 측정값
 E003,기본,판매수량 기준 TOP 3 메뉴는?,"SELECT product_name, MEASURE(item_quantity) AS item_quantity FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY product_name ORDER BY item_quantity DESC LIMIT 3",인기메뉴의 판매수량 기준 예시

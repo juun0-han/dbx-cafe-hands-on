@@ -1,4 +1,4 @@
-order_id,order_ts,store_id,product_id,quantity,unit_price,discount_pct,status
+﻿order_id,order_ts,store_id,product_id,quantity,unit_price,discount_pct,status
 O00101,2026-07-07 12:43:38,S003,P001,2,4500,0,COMPLETED
 O00102,2026-07-12 11:53:42,S001,P002,1,5000,0,COMPLETED
 O00103,2026-07-11 13:42:05,S003,P001,1,4500,0,COMPLETED

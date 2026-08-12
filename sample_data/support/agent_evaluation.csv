@@ -1,4 +1,4 @@
-eval_id,question,expected_route,expected_tool_sequence,expected_answer_contains,notes
+﻿eval_id,question,expected_route,expected_tool_sequence,expected_answer_contains,notes
 A001,매장별 순매출을 비교해줘,structured,genie,강남점|판교점|해운대점,표준 지표와 표준 차원
 A002,판매수량 기준 인기메뉴 TOP3 알려줘,structured,genie,TOP 3,기준이 명시되어 바로 Genie 호출
 A003,날짜별 매출 추이를 보여줘,structured,genie,기간|추이,매출 기본값은 순매출

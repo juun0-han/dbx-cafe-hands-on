@@ -1,4 +1,4 @@
-benchmark_id,mode,category,question,sql_answer,evaluation_note,expected_behavior
+﻿benchmark_id,mode,category,question,sql_answer,evaluation_note,expected_behavior
 B001,Chat,기본,전체 기간 순매출은 얼마야?,SELECT MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics,,순매출 단일 값을 반환
 B002,Chat,기본,매장별 매출을 높은 순서로 알려줘,"SELECT store_name, MEASURE(net_sales) AS net_sales FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY store_name ORDER BY net_sales DESC",,매출을 순매출로 해석하고 내림차순 정렬
 B003,Chat,기본,가장 많이 팔린 메뉴 3개 알려줘,"SELECT product_name, MEASURE(item_quantity) AS item_quantity FROM cafe_training.cafe_hands_on.cafe_sales_metrics GROUP BY product_name ORDER BY item_quantity DESC LIMIT 3",,판매수량 기준 TOP 3

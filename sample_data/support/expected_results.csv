@@ -1,4 +1,4 @@
-scope,dimension,metric,value,unit,calculation_rule
+﻿scope,dimension,metric,value,unit,calculation_rule
 pipeline,전체,raw_order_rows,300,행,3개 주문 배치의 전체 행
 pipeline,전체,unique_order_ids,298,개,order_id 중복 제거
 pipeline,전체,silver_valid_rows,296,행,중복 제거 후 quantity > 0 및 유효 상태

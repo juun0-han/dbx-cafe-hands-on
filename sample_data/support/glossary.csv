@@ -1,4 +1,4 @@
-term_id,term,aliases,definition,metric_or_field,resolution_rule,example_question,updated_at,search_text
+﻿term_id,term,aliases,definition,metric_or_field,resolution_rule,example_question,updated_at,search_text
 G001,매출,판매액|매상|revenue,완료 주문의 할인 적용 후 금액인 순매출을 기본 의미로 사용한다.,net_sales,총매출 또는 할인 전이라는 표현이 없으면 net_sales를 사용한다.,매장별 매출을 알려줘,2026-08-10,용어: 매출. 별칭: 판매액|매상|revenue. 정의: 완료 주문의 할인 적용 후 금액인 순매출을 기본 의미로 사용한다. 적용 규칙: 총매출 또는 할인 전이라는 표현이 없으면 net_sales를 사용한다.
 G002,총매출,할인 전 매출|gross sales,할인 적용 전 상품금액의 합계다.,gross_sales,quantity × unit_price를 합산한다.,전체 총매출은 얼마야?,2026-08-10,용어: 총매출. 별칭: 할인 전 매출|gross sales. 정의: 할인 적용 전 상품금액의 합계다. 적용 규칙: quantity × unit_price를 합산한다.
 G003,순매출,실매출|결제매출|net sales,할인 적용 후 완료 주문의 매출이다.,net_sales,gross_sales에서 discount_amount를 차감한다.,강남점 순매출 알려줘,2026-08-10,용어: 순매출. 별칭: 실매출|결제매출|net sales. 정의: 할인 적용 후 완료 주문의 매출이다. 적용 규칙: gross_sales에서 discount_amount를 차감한다.

@@ -1,4 +1,4 @@
-layer,object,column,type,description,quality_rule,used_by
+﻿layer,object,column,type,description,quality_rule,used_by
 Raw,stores.csv,store_id,STRING,매장 식별자,NOT NULL,Bronze
 Raw,stores.csv,store_name,STRING,매장명,NOT NULL,Metric View
 Raw,stores.csv,region,STRING,지역,NOT NULL,Metric View
